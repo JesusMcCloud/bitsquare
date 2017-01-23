@@ -175,7 +175,7 @@ public class P2PService implements SetupListener, MessageListener, ConnectionLis
                       String myAddress,
                       String banList) {
         if (!useLocalhost)
-            FileUtil.rollingBackup(new File(Paths.get(torDir.getAbsolutePath(), "hiddenservice").toString()), "private_key", 20);
+            FileUtil.rollingBackup(new File(Paths.get(torDir.getAbsolutePath(), TorNetworkNode.DIR_HIDDENSERVICE).toString()), "private_key", 20);
 
         if (banList != null && !banList.isEmpty())
             BanList.setList(Arrays.asList(banList.replace(" ", "").split(",")).stream().map(NodeAddress::new).collect(Collectors.toList()));

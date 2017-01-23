@@ -1,19 +1,6 @@
 package io.bitsquare.p2p.network;
 
-import com.google.common.util.concurrent.*;
-import com.runjva.sourceforge.jsocks.protocol.Socks5Proxy;
-import io.bitsquare.app.Log;
-import io.bitsquare.common.UserThread;
-import io.bitsquare.common.util.Utilities;
-import io.bitsquare.p2p.Message;
-import io.bitsquare.p2p.NodeAddress;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -26,7 +13,26 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.SettableFuture;
+import com.runjva.sourceforge.jsocks.protocol.Socks5Proxy;
+
+import io.bitsquare.app.Log;
+import io.bitsquare.common.UserThread;
+import io.bitsquare.common.util.Utilities;
+import io.bitsquare.p2p.Message;
+import io.bitsquare.p2p.NodeAddress;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 // Run in UserThread
 public abstract class NetworkNode implements MessageListener {

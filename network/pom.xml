@@ -19,9 +19,9 @@
         </dependency>
 
         <dependency>
-            <groupId>io.bitsquare</groupId>
-            <artifactId>jtorproxy</artifactId>
-            <version>${project.parent.version}</version>
+          <groupId>org.berndpruenster.jtor</groupId>
+          <artifactId>native-desktop</artifactId>
+          <version>0.1</version>
         </dependency>
         
         <dependency>

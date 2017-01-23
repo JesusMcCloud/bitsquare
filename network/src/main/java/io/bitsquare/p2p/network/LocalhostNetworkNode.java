@@ -1,27 +1,27 @@
 package io.bitsquare.p2p.network;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.Uninterruptibles;
-import com.msopentech.thali.java.toronionproxy.JavaOnionProxyContext;
-import com.msopentech.thali.java.toronionproxy.JavaOnionProxyManager;
-import io.bitsquare.app.Log;
-import io.bitsquare.common.UserThread;
-import io.bitsquare.common.util.Utilities;
-import io.bitsquare.p2p.NodeAddress;
-import io.nucleo.net.HiddenServiceDescriptor;
-import io.nucleo.net.TorNode;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+
+import org.berndpruenster.jtor.mgmt.TorManager;
+import org.berndpruenster.jtor.socket.HiddenServiceSocket;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.Uninterruptibles;
+
+import io.bitsquare.app.Log;
+import io.bitsquare.common.UserThread;
+import io.bitsquare.common.util.Utilities;
+import io.bitsquare.p2p.NodeAddress;
 
 // Run in UserThread
 public class LocalhostNetworkNode extends NetworkNode {
@@ -85,8 +85,8 @@ public class LocalhostNetworkNode extends NetworkNode {
     // Tor delay simulation
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    private void createTorNode(final Consumer<TorNode> resultHandler) {
-        ListenableFuture<TorNode<JavaOnionProxyManager, JavaOnionProxyContext>> future = executorService.submit(() -> {
+    private void createTorNode(final Consumer<TorManager> resultHandler) {
+        ListenableFuture<TorManager> future = executorService.submit(() -> {
             Utilities.setThreadName("NetworkNode:CreateTorNode");
             long ts = System.currentTimeMillis();
             if (simulateTorDelayTorNode > 0)
@@ -97,8 +97,8 @@ public class LocalhostNetworkNode extends NetworkNode {
                     + "\n############################################################\n");
             return null;
         });
-        Futures.addCallback(future, new FutureCallback<TorNode<JavaOnionProxyManager, JavaOnionProxyContext>>() {
-            public void onSuccess(TorNode<JavaOnionProxyManager, JavaOnionProxyContext> torNode) {
+        Futures.addCallback(future, new FutureCallback<TorManager>() {
+            public void onSuccess(TorManager torMgr) {
                 UserThread.execute(() -> {
                     // as we are simulating we return null
                     resultHandler.accept(null);
@@ -114,8 +114,8 @@ public class LocalhostNetworkNode extends NetworkNode {
         });
     }
 
-    private void createHiddenService(final Consumer<HiddenServiceDescriptor> resultHandler) {
-        ListenableFuture<HiddenServiceDescriptor> future = executorService.submit(() -> {
+    private void createHiddenService(final Consumer<HiddenServiceSocket> resultHandler) {
+        ListenableFuture<HiddenServiceSocket> future = executorService.submit(() -> {
             Utilities.setThreadName("NetworkNode:CreateHiddenService");
             long ts = System.currentTimeMillis();
             if (simulateTorDelayHiddenService > 0)
@@ -126,8 +126,8 @@ public class LocalhostNetworkNode extends NetworkNode {
                     + "\n############################################################\n");
             return null;
         });
-        Futures.addCallback(future, new FutureCallback<HiddenServiceDescriptor>() {
-            public void onSuccess(HiddenServiceDescriptor hiddenServiceDescriptor) {
+        Futures.addCallback(future, new FutureCallback<HiddenServiceSocket>() {
+            public void onSuccess(HiddenServiceSocket hiddenServiceSocket) {
                 UserThread.execute(() -> {
                     // as we are simulating we return null
                     resultHandler.accept(null);
